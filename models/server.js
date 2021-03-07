@@ -23,11 +23,6 @@ class Server {
         methods: ["GET", "POST"],
       },
     });
-
-    // Configuraciones de sockets
-    this.io = socketio(this.server, {
-      /* configuraciones */
-    });
   }
 
   middlewares() {
