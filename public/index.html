@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+      crossorigin="anonymous"
+    />
+
+    <title>Mini Chat</title>
+  </head>
+
+  <body class="container">
+    <h1 class="mt-5">Minichat</h1>
+    <hr />
+    <form id="myForm">
+      <div class="row">
+        <div class="col-8">
+          <input
+            type="text"
+            id="txtMessage"
+            placeholder="Message"
+            class="form-control"
+          />
+        </div>
+        <div class="col-4">
+          <button class="btn btn-primary" type="submit">Send</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-8">
+          <ul id="myMessages" class="mt-2"></ul>
+        </div>
+      </div>
+    </form>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.js"
+      integrity="sha512-YybopSVjZU0fe8TY4YDuQbP5bhwpGBE/T6eBUEZ0usM72IWBfWrgVI13qfX4V2A/W7Hdqnm7PIOYOwP9YHnICw=="
+      crossorigin="anonymous"
+    ></script>
+    <!--Path del socket server-->
+    <script>
+      const socket = io("http://localhost:8080");
+      const formulario = document.querySelector("#myForm");
+      const messages = document.querySelector("#myMessages");
+      const txtMessage = document.querySelector("#txtMessage");
+      formulario.addEventListener("submit", (ev) => {
+        ev.preventDefault();
+        const newMessage = txtMessage.value;
+        console.log(newMessage);
+        socket.emit("message-client", {
+          message: newMessage,
+        });
+      });
+
+      //Client receive message from server
+      socket.on(
+        "message-to-one-client",
+        (data) => (messages.innerHTML += "<li>" + data.message + "</li>")
+      );
+      //El cliente recepciona el mensaje del servidor. Ahora estamos haciendo como que lo del directorio público es el cliente
+      //socket.on("welcome-message", (data) => console.log(data));
+
+      //El cliente manda mensaje al servidor
+      //setTimeout(() => {
+      //  console.log("timeout in");
+      //  socket.emit("message-client", {
+      //    message: "Hi, I'm the client",
+      //    name: "Nata",
+      // });
+      //}, 2000);
+    </script>
+  </body>
+</html>
